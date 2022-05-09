@@ -99,7 +99,7 @@ private[hive] class SparkGetColumnsOperation(
             val tableSchema = 
               if (catalogTable.provider.getOrElse("").equalsIgnoreCase("delta")) {
                 logInfo(s"Getting schema for delta table $catalogTable.identifier")
-                sqlContext.table(catalogTable.identifier.table).schema
+                sqlContext.table(catalogTable.identifier.quoteIdentifier).schema
               } else {
                 catalogTable.schema
               }
