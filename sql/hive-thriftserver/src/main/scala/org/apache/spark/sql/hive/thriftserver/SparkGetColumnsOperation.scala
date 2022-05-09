@@ -98,6 +98,7 @@ private[hive] class SparkGetColumnsOperation(
           catalog.getTablesByName(tables).foreach { catalogTable => {
             val tableSchema = 
               if (catalogTable.provider.getOrElse("").equalsIgnoreCase("delta")) {
+                logInfo(s"Getting schema for delta table $catalogTable.identifier")
                 sqlContext.table(catalogTable.identifier.table).schema
               } else {
                 catalogTable.schema
