@@ -95,8 +95,15 @@ private[hive] class SparkGetColumnsOperation(
       // Tables and views
       db2Tabs.foreach {
         case (dbName, tables) =>
-          catalog.getTablesByName(tables).foreach { catalogTable =>
-            addToRowSet(columnPattern, dbName, catalogTable.identifier.table, catalogTable.schema)
+          catalog.getTablesByName(tables).foreach { catalogTable => {
+            val tableSchema = 
+              if (catalogTable.provider.getOrElse("").equalsIgnoreCase("delta")) {
+                sqlContext.table(catalogTable.identifier.table).schema
+              } else {
+                catalogTable.schema
+              }
+            addToRowSet(columnPattern, dbName, catalogTable.identifier.table, tableSchema)
+          }
           }
       }
 
